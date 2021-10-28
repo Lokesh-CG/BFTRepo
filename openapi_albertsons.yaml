@@ -1,0 +1,54 @@
+openapi: "3.0.3"
+info:
+  version: "1.0.0"
+  title: "BFT Graphql API"
+servers:
+  - url: https://staging-api.bestfoodtrucks.com
+components:
+  securitySchemes:
+    apiEmail:
+      type: apiKey
+      in: header
+      name: "x-partner-email"
+    apiToken:
+      type: apiKey
+      in: header
+      name: "x-partner-token"
+  schemas:
+    GraphqlVariables:
+      description: 'Variables for the query'
+    GraphqlRequest:
+      properties:
+        operationName:
+          type: string
+        query:
+          description: 'Graphql query'
+          type: string
+        variables:
+          $ref: '#/components/schemas/GraphqlVariables'
+      required:
+        - operationName
+        - query
+        - variables
+    GraphqlResponse:
+      description: 'The fields you requested'
+paths:
+  /graphql:
+    post:
+      security:
+        - apiEmail: [ ]
+          apiToken: [ ]
+      summary: "Graphql endpoint"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GraphqlRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphqlResponse'
